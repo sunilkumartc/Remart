@@ -1,0 +1,120 @@
+Test Case1:
+
+input1
+
+{
+ "bookingdate":"12-13-2014",
+ "timeslot":1,
+ "orders":[
+     {"height":1,"width":100,"breath":3}, 
+     {"height":20,"width":2,"breath":300}    
+   ] 
+}
+
+Output:
+
+{
+bookingId: null
+status: "Cannot Fit the Height Should be less than or equal 15"
+isfailed: true
+}
+-------------------------------------------------------------------
+Test Case2
+
+{
+ "bookingdate":"12-13-2014",
+ "timeslot":5,
+ "orders":[
+     {"height":1,"width":100,"breath":3},
+     {"height":20,"width":2,"breath":300}    
+] 
+
+}
+
+output:
+
+{
+bookingId: null
+status: "This Time Slot Not Available to Book-1PM-2PM"
+isfailed: true
+}
+---------------------------------------------------------------------------
+Test Case3
+
+{
+ "bookingdate":"12-13-2014",
+ "timeslot":5,
+ "orders":[
+     {"height":1,"width":1,"breath":300},
+     {"height":20,"width":2,"breath":300}    
+] 
+
+}
+
+output:
+
+{
+bookingId: null
+status: "Cannot Fit the Breath Should be less than or equal 75"
+isfailed: true
+}
+------------------------------------------------------------------------------
+Test Case4
+
+{
+ "bookingdate":"12-13-2014",
+ "timeslot":5,
+ "orders":[
+     {"height":1,"width":160,"breath":3},
+     {"height":20,"width":2,"breath":31}    
+] 
+
+}
+
+output:
+
+{
+bookingId: null
+status: "Cannot Fit the width Should be less than or equal 120"
+isfailed: true
+}
+----------------------------------------------------------------------------------
+Test Case5
+
+{
+ "bookingdate":"12-13-2014",
+ "custID":1,
+ "timeslot":1,
+ "orders":[
+     {"itemName":"item1","height":4,"width":5,"breath":3},
+     {"itemName":"item2","height":6,"width":2,"breath":4}    
+] 
+}
+Output:
+
+{
+bookingId: "REDMART6"
+status: "Shipment Booked SuccessFully"
+
+isfailed: false
+}
+--------------------------------------------------------------------------------------
+Test Case5
+
+{
+ "bookingdate":"12-13-2014",
+  "custID":1,
+ "timeslot":1,
+ "orders":[
+     {"itemName":"item1","height":4,"width":5,"breath":3},
+     {"itemName":"item2","height":6,"width":2,"breath":4}    
+] 
+}
+Output:
+
+{
+bookingId: null
+status: "Sorry No Shipment available try booking for Next Slot"
+isfailed: true
+}
+-------------------------------------------------------------------------------------------
