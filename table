@@ -1,0 +1,181 @@
+CREATE DATABASE  IF NOT EXISTS `redmart` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `redmart`;
+-- MySQL dump 10.13  Distrib 5.6.13, for Win32 (x86)
+--
+-- Host: localhost    Database: redmart
+-- ------------------------------------------------------
+-- Server version	5.6.15
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `book_details`
+--
+
+DROP TABLE IF EXISTS `book_details`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `book_details` (
+  `book_id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_id` int(11) NOT NULL,
+  `slot_id` int(11) DEFAULT NULL,
+  `book_date` datetime DEFAULT NULL,
+  `ship_date` date DEFAULT NULL,
+  PRIMARY KEY (`book_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `book_details`
+--
+
+LOCK TABLES `book_details` WRITE;
+/*!40000 ALTER TABLE `book_details` DISABLE KEYS */;
+INSERT INTO `book_details` VALUES (1,8,5,'2015-01-02 01:08:27','2015-01-02'),(2,9,5,'2015-01-02 01:08:33','2015-01-02'),(3,10,5,'2015-01-02 01:08:35','2015-01-02'),(4,11,1,'2015-01-02 01:14:06','2015-01-02'),(5,12,1,'2015-01-02 01:15:25','2015-01-02'),(6,13,1,'2015-01-02 01:17:04','2015-01-02'),(7,14,1,'2015-01-02 01:18:31','2015-01-02'),(8,15,1,'2015-01-02 01:18:51','2015-01-02'),(9,16,1,'2015-01-02 01:19:10','2015-01-02'),(10,17,1,'2015-01-02 01:19:22','2015-01-02'),(11,18,1,'2015-01-02 01:21:46','2015-01-02'),(12,19,1,'2015-01-02 01:30:35','2015-01-02');
+/*!40000 ALTER TABLE `book_details` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `order_details`
+--
+
+DROP TABLE IF EXISTS `order_details`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `order_details` (
+  `order_id` int(11) NOT NULL AUTO_INCREMENT,
+  `cus_id` int(11) DEFAULT NULL,
+  `order_date` date DEFAULT NULL,
+  PRIMARY KEY (`order_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `order_details`
+--
+
+LOCK TABLES `order_details` WRITE;
+/*!40000 ALTER TABLE `order_details` DISABLE KEYS */;
+INSERT INTO `order_details` VALUES (1,12,'2015-01-02'),(2,12,'2015-01-02'),(3,12,'2015-01-02'),(4,12,'2015-01-02'),(5,12,'2015-01-02'),(6,12,'2015-01-02'),(7,12,'2015-01-02'),(8,12,'2015-01-02'),(9,12,'2015-01-02'),(10,12,'2015-01-02'),(11,12,'2015-01-02'),(12,12,'2015-01-02'),(13,12,'2015-01-02'),(14,12,'2015-01-02'),(15,12,'2015-01-02'),(16,12,'2015-01-02'),(17,12,'2015-01-02'),(18,12,'2015-01-02'),(19,12,'2015-01-02');
+/*!40000 ALTER TABLE `order_details` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `order_items`
+--
+
+DROP TABLE IF EXISTS `order_items`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `order_items` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_id` int(11) DEFAULT NULL,
+  `height` int(11) DEFAULT NULL,
+  `breath` int(11) DEFAULT NULL,
+  `width` int(11) DEFAULT NULL,
+  `itemname` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `order_items`
+--
+
+LOCK TABLES `order_items` WRITE;
+/*!40000 ALTER TABLE `order_items` DISABLE KEYS */;
+INSERT INTO `order_items` VALUES (1,7,1,3,100,'item1'),(2,7,20,300,2,'item2'),(3,8,1,3,100,'item1'),(4,8,20,300,2,'item2'),(5,9,1,3,100,'item1'),(6,9,20,300,2,'item2'),(7,10,1,3,100,'item1'),(8,10,20,300,2,'item2'),(9,11,1,3,5,'item1'),(10,11,20,4,2,'item2'),(11,12,4,3,5,'item1'),(12,12,6,4,2,'item2'),(13,13,4,3,5,'item1'),(14,13,6,4,2,'item2'),(15,14,4,3,5,'item1'),(16,14,6,90,2,'item2'),(17,15,4,3,5,'item1'),(18,15,6,150,2,'item2'),(19,16,4,3,5,'item1'),(20,16,6,150,2,'item2'),(21,17,4,300,5,'item1'),(22,17,6,150,2,'item2'),(23,18,4,300,5,'item1'),(24,18,6,150,2,'item2'),(25,19,4,30,5,'item1'),(26,19,6,40,130,'item2');
+/*!40000 ALTER TABLE `order_items` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `slot_table`
+--
+
+DROP TABLE IF EXISTS `slot_table`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `slot_table` (
+  `idslot` int(11) NOT NULL AUTO_INCREMENT,
+  `time_from` int(11) DEFAULT NULL,
+  `time_to` int(11) DEFAULT NULL,
+  PRIMARY KEY (`idslot`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `slot_table`
+--
+
+LOCK TABLES `slot_table` WRITE;
+/*!40000 ALTER TABLE `slot_table` DISABLE KEYS */;
+INSERT INTO `slot_table` VALUES (1,9,11),(2,11,13),(3,14,16),(4,16,18);
+/*!40000 ALTER TABLE `slot_table` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vechicle_size`
+--
+
+DROP TABLE IF EXISTS `vechicle_size`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `vechicle_size` (
+  `vsize_id` int(11) NOT NULL,
+  `bookid` int(11) DEFAULT NULL,
+  PRIMARY KEY (`vsize_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vechicle_size`
+--
+
+LOCK TABLES `vechicle_size` WRITE;
+/*!40000 ALTER TABLE `vechicle_size` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vechicle_size` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vehicle_table`
+--
+
+DROP TABLE IF EXISTS `vehicle_table`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `vehicle_table` (
+  `vehicle_od` int(11) NOT NULL AUTO_INCREMENT,
+  `vehicle_number` varchar(45) DEFAULT NULL,
+  `vehicle_details` text,
+  PRIMARY KEY (`vehicle_od`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vehicle_table`
+--
+
+LOCK TABLES `vehicle_table` WRITE;
+/*!40000 ALTER TABLE `vehicle_table` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vehicle_table` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2015-01-02  2:12:08
