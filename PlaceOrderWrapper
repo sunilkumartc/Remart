@@ -1,0 +1,217 @@
+package com.redmart.orders;
+
+import java.util.Date;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.redmart.apputils.JdbcDao;
+import com.redmart.apputils.OrderNode;
+import com.redmart.apputils.ValidateOrders;
+import com.redmart.constants.Constants;
+import com.redmart.vo.BookResponseVo;
+import com.redmart.vo.DimensionVo;
+import com.redmart.vo.OrderDetailsVo;
+
+public class PlaceOrderWrapper {
+	
+	private static Logger LOG = LoggerFactory
+			.getLogger(PlaceOrderWrapper.class);
+
+	@Autowired
+	private ValidateOrders validateOrders;
+	
+	@Autowired
+	private JdbcDao jdbcDao;
+	
+	public OrderNode root;
+	
+	public OrderNode getRoot() {
+		
+		return root;
+		
+	}
+	private Integer slotid;
+	
+	public void setRoot(OrderNode root) {
+		
+		this.root = root;
+	
+	}
+	
+	/**Placing Order.
+	 * @param orderDetails
+	 * @return
+	 */
+	public  BookResponseVo placeOrder(OrderDetailsVo orderDetails){
+		
+		LOG.info("Validating Order Details");
+		
+		BookResponseVo bookResponseVo= validateOrders.validateAllocation(orderDetails);
+		
+		Boolean isallocated=true;
+		
+		Integer book_id=null;
+		
+		slotid =orderDetails.getTimeslot();
+		
+		LOG.info("Checking for Allocation Details");
+
+		if(!bookResponseVo.getIsfailed()){
+		//Insert statement
+		for(DimensionVo dimensionVo:orderDetails.getOrders()){
+			
+			isallocated=buildTree(dimensionVo.getHeight(),dimensionVo.getBreath(),dimensionVo.getWidth());
+            
+			if(isallocated=false){
+            	
+				break;
+            }
+		}
+		 if(isallocated){
+			 
+		 book_id=persistBookDetailsIntoDB(orderDetails);
+		 
+		 bookResponseVo.setBookingId("REDMART"+book_id);
+		
+		 bookResponseVo.setStatus("Shipment Booked SuccessFully");
+			
+		 }
+		 else{
+			 
+			 bookResponseVo.setBookingId("Sorry!!! No Shipment available try booking for Next Slot");
+		
+		 }
+		}
+		else{
+			
+			return bookResponseVo;	
+		
+		}
+    
+		return bookResponseVo;
+		
+	}
+	
+	/**building the Tree for Allocation
+	 * @param ht
+	 * @param br
+	 * @param wd
+	 * @return
+	 */
+	public Boolean buildTree(Integer ht,Integer br,Integer wd){
+		
+		LOG.info("Building Tree for Allocation");
+		
+		if(this.root==null){
+			
+			this.root=new OrderNode(ht,br,wd);
+			this.root.setLeft(new OrderNode(ht, br, Constants.width_MAX-wd));
+			this.root.setRight(new OrderNode(ht, Constants.breath_MAX-br, wd));
+			this.root.setIsallocated(true);
+			
+		}
+		else{
+			
+			OrderNode node=traverseTreeToInsert(br,wd,root);
+			
+			if(node!=null){
+			
+				node.setLeft(new OrderNode(ht,br, node.getWidth()-wd));
+			
+				node.setRight(new OrderNode(ht, node.getBreadth()-br, wd));
+			
+				node.setIsallocated(true);
+			
+				LOG.debug("Breath"+node.getBreadth() + "width"+node.getWidth());
+				
+			
+			}
+			else{
+				//if could not fill into first van.look for van count and recreate Tree.
+				LOG.debug("Cannot Allocate Space");
+				
+				Integer count = (Integer)jdbcDao.getJdbcTemplateConnection().queryForObject(Constants.slot_count, new Object[]{slotid,new Date()} , Integer.class);
+
+				if(Constants.van_count==count){
+					
+					return false;
+				}
+				else{
+					//updating count
+					jdbcDao.getJdbcTemplateConnection().update(Constants.slot_insert,  new Object[]{slotid,count+1});
+					//setting root node to Null
+					this.root = null;
+					//Rebuilding Tree.
+					buildTree(ht, br, wd);
+				}
+
+			}
+		}
+		return true;
+			
+	}
+	
+	/**Traversing Tree for Allocation
+	 * @param br
+	 * @param wd
+	 * @param orderNode
+	 * @return
+	 */
+	private  OrderNode traverseTreeToInsert(Integer br,Integer wd,OrderNode orderNode) {
+
+        if(orderNode==null){
+        	
+        	return null;
+        }	
+        
+		if(br<=orderNode.getBreadth() && wd<=orderNode.getWidth() && orderNode.getIsallocated()==null){
+			
+			return orderNode;
+		
+		}
+		
+		OrderNode ret=traverseTreeToInsert(br, wd, orderNode.getLeft());
+		
+		if(ret!=null){
+			
+			return ret;
+		}
+		
+		ret=traverseTreeToInsert(br, wd, orderNode.getRight());
+		
+		return ret;
+	}
+	
+	
+	/**
+	 * Persisting Booking Details into Table
+	 * @param orderDetailsVo
+	 * @return
+	 */
+	public Integer persistBookDetailsIntoDB(OrderDetailsVo orderDetailsVo){
+		
+	
+		LOG.info("Persisting into DB");
+		
+		jdbcDao.getJdbcTemplateConnection().update(Constants.order_Insert, new Object[] {12,new Date()});
+		      
+		Integer orderid = (Integer)jdbcDao.getJdbcTemplateConnection().queryForObject(Constants.order_select, new Object[]{} , Integer.class);
+        
+		for(DimensionVo dimensionVo:orderDetailsVo.getOrders()){
+			
+		 jdbcDao.getJdbcTemplateConnection().update(Constants.order_items_Insert, new Object[]{orderid,dimensionVo.getHeight(),dimensionVo.getBreath(),dimensionVo.getWidth(),dimensionVo.getItemName()});
+
+		}
+        
+		jdbcDao.getJdbcTemplateConnection().update(Constants.book_details_Insert,  new Object[]{orderid,orderDetailsVo.getTimeslot(),new Date(),new Date()});
+		
+		Integer bookid = (Integer)jdbcDao.getJdbcTemplateConnection().queryForObject(Constants.book_select, new Object[]{} , Integer.class);
+		
+		LOG.info("Persisting into DB completed");
+
+		return bookid;
+	}
+	
+}
